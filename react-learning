@@ -1,0 +1,126 @@
+react-router
+1.router就是定义一个在应用上可以访问的网址。比如一个影视类的应用，就可以定义为一个叫做tv的路由，然后对应的地址就是tv，打开这个地址就可以看到电视的节目列表
+也可以给一个一个影视类的节目添加一个路由，比如他叫shows，show/:id
+2.一般的是在定义shows的这个路由的时候，地址栏中使用了一个参数就是id，在对应的组件里我们可以得到这个参数的值。
+3.一般就是用这个id，向服务端请求所对应的内容，请求之后再去设置一下组件的状态。 
+   问：如何得到这个参数的值？
+   答：在对应的路由组件里面添加一个constructor方法，构造函数 .. 给它一个 props 参数 … 在这个方法里再执行一下 super .. 把 props 交给这个 super 。
+   然后在render方法里面使用this.props.params.id
+   this.props.params.id会随着地址栏中的修改而修改
+   问：如何取到这个索引
+   答：文件头部导入一个IndexRoute，这个首页路由的里面，用一个 IndexRoute .. 添加一个 component 属性比如{Home}
+      再去定义一个路由的方法，返回render方法
+  前提： 在首页上，这个组件里的 this.props.children 其实是没有东西的，我们可以在路由中指定一个要显示的东西，这样当没有要显示儿子的时候，我们会显示这个默认组件。
+  注意：添加的默认索引要放到路由后面
+   问：如何重定向
+   答： from 是源地址
+       to   是重定向的地址
+4.地就是地址里在的那个 ? 后面是一个名字，然后是一个等号，等号右边是一个值 … 这就是我们说的查询符。
+5.比如你可以使用查询符设置内容列表的排序标签，或者可以过滤一下内容列表里的内容 …
+  在组件里你可以利用查询符去处理要显示的数据 …从 this.props.location 里面提取出来 ..
+6.组件的生命周期
+ componentDidMount : 组件将会在加载一次后执行
+ 
+ 组件的生命周期，就是一个组件从出生到结束这期间的不同的阶段，比如把组件显示出来，这个阶段叫 componentDidMount ，component 是组件，Did 表示已经，Mount 可以看成是显示，或者翻译成挂载
+ componentWillReceiveProps：
+ 在首页转向其它的地址的时候，又会在组件上触发一些动作。
+ componentDidUpdate ，组件完成更新 
+ componentWillUnmount  组件将要被拿掉了
+ componentDidMount 
+ 'use strict';
+import 'semantic-ui/semantic.min.css!';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router, Route, Link ,IndexRoute} from 'react-router';
+
+class App extends React.Component{
+    componentDidMount(){
+        console.log('Tv is mount')
+
+    }
+    componentWillMount(){
+        console.log('app is willmoument')
+
+    }
+    componentDidUpdate(){
+
+    }
+    render() {
+        return (
+            <div>
+                <h1>App</h1>
+               <div className="ui secondary pointing menu">
+               <Link to='/' clssName='item'>首页</Link>
+               <Link to='/tv' clssName='item' query={{orderBy:'data'}}>节目</Link>
+
+               </div>
+                {this.props.children}
+            </div>
+        )
+    }
+
+}
+class TV extends React.Component{
+    componentDidMount(){
+        
+
+    }
+    constructor(props){
+        super(props)
+    }
+    render() {
+
+        let {query}=this.props.location;
+        return (
+            <div>
+                <div className="ui messge info">
+                </div>
+                {this.props.children}
+            </div>
+
+        )
+
+    }
+
+}
+class Show extends React.Component{
+    constructor(props){
+        super(props)
+
+    }
+    render() {
+        return (
+           <h3>电视节目列表</h3>
+        )
+
+    }
+}
+class Home extends React.Component{
+    componentDidUnMount(){
+        console.log('home componentDidMount')
+
+    }
+  render(){
+      return (<h1>这是电视列表</h1>)
+  } 
+}
+class ShowIndex extends React.Component{
+    render(){
+        return (<h1>这是节目列表</h1>)
+    } 
+  }
+ReactDOM.render((
+    <Router>
+        <Route path="./" component={App}>
+            <IndexRoute component={Home} /> 
+            <Route path="/" component={TV}>
+               <IndexRoute component={ShowIndex} /> 
+                <Route path="/show/:id" component={Show} onLeave={handleLeave} onEnter={handleEnter}/>>
+                <diReact from="show/:id" to="/show/:id" />>
+            </Route>
+
+        </Route>
+    </Router>
+), document.getElementById('App'));
+  
+

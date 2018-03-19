@@ -1,0 +1,8 @@
+mobx
+http://blog.csdn.net/shuzipai/article/details/72772361
+1。yarn app-name
+2.每个组件单独一个JS文件
+3.导入文件的时候，路径是相对于上个引入他组件
+
+
+
